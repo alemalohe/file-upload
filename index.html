@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Major+Mono+Display:300,400,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Heebo:300,400,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Poppins:300,400,700"
+    />
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-1.9.1.js"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <section id="upload_container">
+      <div class="container">
+        <div class="main-container">
+          <div class="loader" id="progressBar" hidden></div>
+          <div class="picked_files text-left pl-4">
+            <div class="row pt-4 pr-4">
+              <div class="col-lg-6 col-md-6 text-left">
+                <h4 id="uploading">Upload File</h4>
+              </div>
+              <div id="percent" class="col-lg-6 col-md-6 percent-right" hidden>
+                <h6 id="status" class="percent">0%</h6>
+              </div>
+            </div>
+            <h5 class="disc pr-4">
+              Attach your resume, portfolio or other previous work you did
+            </h5>
+            <br />
+            <div id="picked" class="pr-4">
+              <p hidden>
+                lorem ipsunnnn<button class="cross_btn">
+                  <i class="fa fa-times"></i>
+                </button>
+              </p>
+            </div>
+          </div>
+          <form id="upload_form" class="pr-4 pl-4">
+            <label for="files" id="for_files" class="choose_btn"
+              >Choose File</label
+            >
+            <button class="submit" type="button" id="sub" hidden>Submit</button>
+            <input type="file" name="files" id="files" multiple hidden />
+            <p id="loaded_n_total" hidden></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="submitted" hidden>
+      <div class="container">
+        <div class="main-container2 col-lg-6 pl-4 pr-4">
+          <div class="success-checkmark">
+            <div class="check-icon">
+              <span class="icon-line line-tip"></span>
+              <span class="icon-line line-long"></span>
+              <div class="icon-circle"></div>
+              <div class="icon-fix"></div>
+            </div>
+          </div>
+          <h3 class="completed">
+            Submitted! <br /><font class="disc2"
+              >We'll get back to you asap</font
+            >
+          </h3>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      var files = document.querySelector("#files");
+      var for_files = document.querySelector("#for_files");
+      var picked = document.querySelector("#picked");
+
+      var submitted = document.getElementById("submitted");
+
+      var upload_container = document.getElementById("upload_container");
+
+      var progressBar = document.querySelector("#progressBar");
+
+      function startanimation() {
+        //upload top animation
+        progressBar.hidden = false;
+        progressBar.classList.add("up");
+
+        document.getElementById("uploading").innerHTML = "Uploading...";
+
+        var counter = 0;
+        function inter() {
+          if (counter <= 100) {
+            document.getElementById("uploading").classList.add("light");
+            document.getElementById("status").innerHTML =
+              counter + "% uploaded";
+            counter += 5;
+            setInterval(() => {
+              inter();
+            }, 1000);
+          } else {
+            for_files.hidden = true;
+            sub.hidden = false;
+            document.getElementById("uploading").classList.remove("light");
+            document.getElementById("uploading").classList.add("success");
+            document.getElementById("uploading").innerHTML = "Done!";
+          }
+        }
+
+        document.getElementById("percent").hidden = false;
+        inter();
+      }
+
+      var sub = document.getElementById("sub");
+
+      sub.addEventListener("click", function() {
+        upload_container.hidden = true;
+        submitted.hidden = false;
+        $(".check-icon").hide();
+        setTimeout(function() {
+          $(".check-icon").show();
+        }, 10);
+      });
+
+      files.onchange = () => {
+        console.log(files);
+
+        picked.innerHTML = "";
+        var fi = document.createElement("p");
+        var btn = document.createElement("button");
+        btn.classList.add("cross_btn");
+        var times = document.createElement("i");
+        times.classList.add("fa");
+        times.classList.add("fa-times");
+        times.classList.add("times_btn");
+        btn.append(times);
+        var text = document.createTextNode(
+          files.files[0].name.length > 17
+            ? files.files[0].name.slice(0, 16) + "..."
+            : files.files[0].name
+        );
+        fi.appendChild(text);
+        fi.appendChild(btn);
+        picked.append(fi);
+
+        if (files.files) {
+          startanimation();
+        }
+
+        var bt = document.querySelector(".times_btn");
+        bt.onclick = function() {
+          files.value = "";
+          picked.innerHTML = "";
+          document.getElementById("uploading").innerHTML = "Upload File";
+          document.getElementById("uploading").classList.remove("light");
+          document.getElementById("uploading").classList.remove("success");
+          document.getElementById("progressBar").hidden = true;
+          document.getElementById("sub").hidden = true;
+          for_files.hidden = false;
+        };
+
+        file = files.files[0];
+        //alert(file.name+" | "+file.size+" | "+file.type);
+      };
+    </script>
+  </body>
+</html>
